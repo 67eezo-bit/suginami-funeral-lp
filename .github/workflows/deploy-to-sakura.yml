@@ -1,0 +1,30 @@
+name: Deploy to Sakura Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Sakura via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SAKURA_FTP_SERVER }}
+          username: ${{ secrets.SAKURA_FTP_USERNAME }}
+          password: ${{ secrets.SAKURA_FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ${{ secrets.SAKURA_SERVER_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .github/**
+            *.zip
